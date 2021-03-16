@@ -1,0 +1,24 @@
+Operation: merge_small_files
+REAL: 0.030000   USER CPU: 0.000000   SYSTEM CPU: 0.010000 
+
+Operation: merge_middle_files
+REAL: 0.520000   USER CPU: 0.120000   SYSTEM CPU: 0.390000 
+
+Operation: merge_large_files
+REAL: 2.580000   USER CPU: 0.820000   SYSTEM CPU: 1.760000 
+
+Operation: merge_many_medium_files
+REAL: 1.660000   USER CPU: 0.540000   SYSTEM CPU: 1.060000 
+
+Operation: merge_many_medium_files
+REAL: 0.330000   USER CPU: 0.120000   SYSTEM CPU: 0.210000 
+
+Operation: merge_many_large_files
+REAL: 1.640000   USER CPU: 0.430000   SYSTEM CPU: 1.180000 
+
+Operation: all_together_middle
+REAL: 0.870000   USER CPU: 0.290000   SYSTEM CPU: 0.540000 
+
+Operation: all_together_large
+REAL: 4.040000   USER CPU: 1.210000   SYSTEM CPU: 2.810000 
+
