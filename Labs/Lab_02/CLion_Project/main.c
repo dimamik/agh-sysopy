@@ -1,31 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include "string.h"
 
 
+#define LIB
 
 #ifdef LIB
 #define M_FILE FILE*
 #define M_READ fread(&ch, 1, 1, fp)
-#define M_OPEN_1 fopen(first_path,"r")
-#define M_OPEN_2 fopen(second_path,"r")
+#define M_OPEN fopen(write_path,"a+")
+#define M_OPEN_READ fopen(read_path,"r")
 #define M_CLOSE fclose
+#define M_WRITE fwrite(string, sizeof(char), strlen(string), ptr)
 #define M_STDIN stdin
 #define M_NULL NULL
 
 #else
+
 #include <zlib.h>
 #include <fcntl.h>
+
 #define M_FILE int
 #define M_READ read(fp, &ch,sizeof (char))
-#define M_OPEN_1 open(first_path,O_RDONLY)
-#define M_OPEN_2 open(second_path,O_RDONLY)
+#define M_OPEN open(write_path,O_WRONLY|O_CREAT | O_APPEND,S_IRUSR|S_IWUSR)
+#define M_OPEN_READ open(read_path,O_RDONLY)
 #define M_CLOSE close
+#define M_WRITE write(ptr, string, strlen(string))
 #define M_STDIN STDIN_FILENO
 #define M_NULL 0
 #endif
 
 
 int START_SIZE = 256;
+int NEW_LINE_AT = 5;
 
 /**
  * Reads string from fp and returns address to allocated memory
@@ -58,57 +66,63 @@ char *inputString(M_FILE fp, size_t start_size) {
     return realloc(str, sizeof(*str) * len);
 }
 
-int checkIfThereIsCharInString(char ch, const char *string) {
-    int i = -1;
 
-    while (string[++i] != '\n') {
-        if (string[i] == ch) {
-            return 1;
+char *addEndLineCharsToString(char *s) {
+
+    char *prev_s = calloc(strlen(s) + 1, sizeof(char));
+    strcpy(prev_s, s);
+    unsigned len_s = strlen(s) - 2;
+    unsigned len_of_new_string = 2 * (len_s) / NEW_LINE_AT + len_s - 1;
+    free(s);
+    s = malloc(len_of_new_string * sizeof(char));
+    int i = 0, j = 0;
+    while (i < len_s && j < len_of_new_string) {
+
+        if (i % NEW_LINE_AT == 0 && i != 0) {
+            s[j++] = '\r';
+            s[j++] = '\n';
         }
+        s[j++] = prev_s[i++];
+
     }
-    return 0;
+    free(prev_s);
+    s[j++] = '\r';
+    s[j++] = '\n';
+    return s;
+}
+
+
+char *replaceStringIfNeeded(char *line) {
+    if (strlen(line) > NEW_LINE_AT) {
+        return addEndLineCharsToString(line);
+    } else {
+        return line;
+    }
+
 
 }
 
-/**
- * Only using fread() i fwrite()
- * @param first_path
- * @param second_path
- */
-void zad1_lib(char ch, char *first_path) {
-    if (first_path == NULL || ch == 0) {
-        printf("Please, give normal char and path");
-        exit(1);
-    }
-    M_FILE first = M_OPEN_1;
-    if (first == M_NULL) {
-        perror("Can't open file: ");
-    }
 
-    char *first_buffer = inputString(first, START_SIZE);
+void zad5(char *read_path, char *write_path) {
 
+
+    M_FILE dane = M_OPEN_READ;
+    char *first_buffer = inputString(dane, START_SIZE);
     while (first_buffer != NULL) {
-        if (first_buffer != NULL) {
-            if (checkIfThereIsCharInString(ch, first_buffer)) {
-                printf("%s", first_buffer);
-            }
-            free(first_buffer);
-            first_buffer = inputString(first, 10);
-        }
+        M_FILE ptr = M_OPEN;
+        char *string = replaceStringIfNeeded(first_buffer);
+        M_WRITE;
+        M_CLOSE(ptr);
+        free(string);
+        first_buffer = inputString(dane, 10);
 
     }
-    M_CLOSE(first);
-}
 
-/**
- * ../1.txt
- * ../2.txt
- * @param argc
- * @param argv
- * @return
- */
+}
 
 int main(int argc, char **argv) {
-    zad1_lib(argv[1][0], argv[2]);
+
+    zad5("in.txt", "out.txt");
+
     return 0;
 }
