@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/times.h>
 
 #ifdef LIB
 #define M_FILE FILE *
@@ -11,8 +13,9 @@
 #define M_NULL NULL
 
 #else
-#include <zlib.h>
+
 #include <fcntl.h>
+
 #define M_FILE int
 #define M_READ read(fp, &ch, sizeof(char))
 #define M_OPEN_1 open(first_path, O_RDONLY)
@@ -79,6 +82,7 @@ void zad1(char *first_path, char *second_path)
     {
 
         perror("Can't open files: ");
+        exit(-1);
     }
     char *first_buffer = inputString(first, START_SIZE);
     char *second_buffer = inputString(second, START_SIZE);
@@ -102,6 +106,31 @@ void zad1(char *first_path, char *second_path)
     M_CLOSE(second);
 }
 
+double subtract_time(clock_t start, clock_t end)
+{
+    return (double)(end - start) / (double)sysconf(_SC_CLK_TCK);
+}
+
+void write_to_file_and_console(char *procedure_name, char *file_name, clock_t real_time[2], struct tms **tms_time)
+{
+
+    FILE *ptr = fopen(file_name, "ab");
+
+    fprintf(ptr, "Operation: %s\n", procedure_name);
+    fprintf(ptr, "REAL: %lf   ", subtract_time(real_time[0], real_time[1]));
+    fprintf(ptr, "USER CPU: %lf   ", subtract_time(tms_time[0]->tms_utime, tms_time[1]->tms_utime));
+    fprintf(ptr, "SYSTEM CPU: %lf ", subtract_time(tms_time[0]->tms_stime, tms_time[1]->tms_stime));
+    fprintf(ptr, "\n\n");
+
+    printf("Operation: %s\n", procedure_name);
+    printf("REAL: %lf   ", subtract_time(real_time[0], real_time[1]));
+    printf("USER CPU: %lf   ", subtract_time(tms_time[0]->tms_utime, tms_time[1]->tms_utime));
+    printf("SYSTEM CPU: %lf ", subtract_time(tms_time[0]->tms_stime, tms_time[1]->tms_stime));
+    printf("\n\n");
+
+    fclose(ptr);
+}
+
 /**
  * ../1.txt
  * ../2.txt
@@ -112,6 +141,28 @@ void zad1(char *first_path, char *second_path)
 
 int main(int argc, char **argv)
 {
-    zad1(argv[1], argv[2]);
+    if (argc < 1)
+    {
+        printf("%s", "too less arguments!");
+        exit(-1);
+    }
+
+    clock_t real_time[2];
+    struct tms **tms_time = malloc(2 * sizeof(struct tms *));
+    for (int i = 0; i < 2; i++)
+    {
+        tms_time[i] = (struct tms *)malloc(sizeof(struct tms));
+    }
+    real_time[0] = times(tms_time[0]);
+    zad1(argv[2], argv[3]);
+    real_time[1] = times(tms_time[1]);
+
+    write_to_file_and_console(argv[1], "pomiar_zad_1.txt", real_time, tms_time);
+
+    for (int i = 0; i < 2; i++)
+    {
+        free(tms_time[i]);
+    }
+    free(tms_time);
     return 0;
 }

@@ -1,22 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/times.h>
 
 #ifdef LIB
 #define M_FILE FILE *
 #define M_READ fread(&ch, 1, 1, fp)
 #define M_OPEN_1 fopen(first_path, "r")
-#define M_OPEN_2 fopen(second_path, "r")
 #define M_CLOSE fclose
 #define M_STDIN stdin
 #define M_NULL NULL
 
 #else
-#include <zlib.h>
+
 #include <fcntl.h>
+
 #define M_FILE int
 #define M_READ read(fp, &ch, sizeof(char))
 #define M_OPEN_1 open(first_path, O_RDONLY)
-#define M_OPEN_2 open(second_path, O_RDONLY)
 #define M_CLOSE close
 #define M_STDIN STDIN_FILENO
 #define M_NULL 0
@@ -89,7 +90,8 @@ void zad1_lib(char ch, char *first_path)
     M_FILE first = M_OPEN_1;
     if (first == M_NULL)
     {
-        perror("Can't open file: ");
+        printf("%s", "There is no file dane.txt at given path");
+        exit(-1);
     }
 
     char *first_buffer = inputString(first, START_SIZE);
@@ -109,6 +111,31 @@ void zad1_lib(char ch, char *first_path)
     M_CLOSE(first);
 }
 
+double subtract_time(clock_t start, clock_t end)
+{
+    return (double)(end - start) / (double)sysconf(_SC_CLK_TCK);
+}
+
+void write_to_file_and_console(char *procedure_name, char *file_name, clock_t real_time[2], struct tms **tms_time)
+{
+
+    FILE *ptr = fopen(file_name, "ab");
+
+    fprintf(ptr, "Operation: %s\n", procedure_name);
+    fprintf(ptr, "REAL: %lf   ", subtract_time(real_time[0], real_time[1]));
+    fprintf(ptr, "USER CPU: %lf   ", subtract_time(tms_time[0]->tms_utime, tms_time[1]->tms_utime));
+    fprintf(ptr, "SYSTEM CPU: %lf ", subtract_time(tms_time[0]->tms_stime, tms_time[1]->tms_stime));
+    fprintf(ptr, "\n\n");
+
+    printf("Operation: %s\n", procedure_name);
+    printf("REAL: %lf   ", subtract_time(real_time[0], real_time[1]));
+    printf("USER CPU: %lf   ", subtract_time(tms_time[0]->tms_utime, tms_time[1]->tms_utime));
+    printf("SYSTEM CPU: %lf ", subtract_time(tms_time[0]->tms_stime, tms_time[1]->tms_stime));
+    printf("\n\n");
+
+    fclose(ptr);
+}
+
 /**
  * ../1.txt
  * ../2.txt
@@ -119,11 +146,24 @@ void zad1_lib(char ch, char *first_path)
 
 int main(int argc, char **argv)
 {
-    if (argc < 2){
-        printf("You need to give 2 arguments");
-        exit(1);
-    }
 
-    zad1_lib(argv[1][0], argv[2]);
+    clock_t real_time[2];
+    struct tms **tms_time = malloc(2 * sizeof(struct tms *));
+    for (int i = 0; i < 2; i++)
+    {
+        tms_time[i] = (struct tms *)malloc(sizeof(struct tms));
+    }
+    real_time[0] = times(tms_time[0]);
+    zad1_lib(argv[2][0], argv[3]);
+    real_time[1] = times(tms_time[1]);
+
+    write_to_file_and_console(argv[1], "pomiar_zad_5.txt", real_time, tms_time);
+
+    for (int i = 0; i < 2; i++)
+    {
+        free(tms_time[i]);
+    }
+    free(tms_time);
+
     return 0;
 }

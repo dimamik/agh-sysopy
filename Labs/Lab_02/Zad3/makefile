@@ -1,10 +1,10 @@
 lib_test:
 	make clear
 	gcc -Wall main.c -o main -D LIB -lm
-	./main
+	./main lib
 sys_test:
 	make clear
 	gcc -Wall main.c -o main -lm
-	./main
+	./main sys
 clear:
 	rm -f a.txt b.txt c.txt

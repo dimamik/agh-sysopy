@@ -1,8 +1,6 @@
 lib_test:
 	gcc -Wall main.c -o main -D LIB
-	./main 5 "1.txt"
-	./main
+	./main lib K "in.txt"
 sys_test:
 	gcc -Wall main.c -o main 
-	./main 5 "1.txt"
-	./main
+	./main sys K "in.txt"

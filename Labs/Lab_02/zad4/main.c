@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include "string.h"
-
+#include <unistd.h>
+#include <sys/times.h>
 
 #ifdef LIB
 #define M_FILE FILE *
@@ -98,24 +99,75 @@ void zad4(char *read_path, char *write_path, char *first_replace, char *second_t
     second_to_replace = addEndLineCharToString(second_to_replace);
 
     M_FILE dane = M_OPEN_READ;
+    if (dane == M_NULL)
+    {
+        printf("%s", "There is no file dane.txt at given path");
+        exit(-1);
+    }
     char *first_buffer = inputString(dane, START_SIZE);
+    M_FILE ptr = M_OPEN;
     while (first_buffer != NULL)
     {
-        M_FILE ptr = M_OPEN;
+
         char *string = replaceStringIfNeeded(first_buffer, first_replace, second_to_replace);
         M_WRITE;
-        M_CLOSE(ptr);
+
         free(first_buffer);
         first_buffer = inputString(dane, 10);
     }
+    M_CLOSE(ptr);
     free(first_replace);
     free(second_to_replace);
 }
+double subtract_time(clock_t start, clock_t end)
+{
+    return (double)(end - start) / (double)sysconf(_SC_CLK_TCK);
+}
 
-int main(int argc, char **argv)
+void write_to_file_and_console(char *procedure_name, char *file_name, clock_t real_time[2], struct tms **tms_time)
 {
 
-    zad4("in.txt", "out.txt", "First 2", "Hello World");
+    FILE *ptr = fopen(file_name, "ab");
 
+    fprintf(ptr, "Operation: %s\n", procedure_name);
+    fprintf(ptr, "REAL: %lf   ", subtract_time(real_time[0], real_time[1]));
+    fprintf(ptr, "USER CPU: %lf   ", subtract_time(tms_time[0]->tms_utime, tms_time[1]->tms_utime));
+    fprintf(ptr, "SYSTEM CPU: %lf ", subtract_time(tms_time[0]->tms_stime, tms_time[1]->tms_stime));
+    fprintf(ptr, "\n\n");
+
+    printf("Operation: %s\n", procedure_name);
+    printf("REAL: %lf   ", subtract_time(real_time[0], real_time[1]));
+    printf("USER CPU: %lf   ", subtract_time(tms_time[0]->tms_utime, tms_time[1]->tms_utime));
+    printf("SYSTEM CPU: %lf ", subtract_time(tms_time[0]->tms_stime, tms_time[1]->tms_stime));
+    printf("\n\n");
+
+    fclose(ptr);
+}
+int main(int argc, char **argv)
+{
+    if (argc < 6)
+    {
+        printf("%s", "too less arguments!");
+        exit(-1);
+    }
+
+    clock_t real_time[2];
+    struct tms **tms_time = malloc(2 * sizeof(struct tms *));
+    for (int i = 0; i < 2; i++)
+    {
+        tms_time[i] = (struct tms *)malloc(sizeof(struct tms));
+    }
+    real_time[0] = times(tms_time[0]);
+
+    zad4(argv[2], argv[3], argv[4], argv[5]);
+    real_time[1] = times(tms_time[1]);
+
+    write_to_file_and_console(argv[1], "pomiar_zad_4.txt", real_time, tms_time);
+
+    for (int i = 0; i < 2; i++)
+    {
+        free(tms_time[i]);
+    }
+    free(tms_time);
     return 0;
 }

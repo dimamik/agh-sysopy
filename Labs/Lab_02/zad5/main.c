@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/times.h>
@@ -19,7 +16,6 @@
 
 #else
 
-#include <zlib.h>
 #include <fcntl.h>
 
 #define M_FILE int
@@ -33,13 +29,12 @@
 #endif
 
 int START_SIZE = 256;
-int NEW_LINE_AT = 5;
+int NEW_LINE_AT = 50;
 
 /**
  * Reads string from fp and returns address to allocated memory
  * @param fp
  * @param start_size
- * @return
  */
 char *inputString(M_FILE fp, size_t start_size)
 {
@@ -77,9 +72,9 @@ char *addEndLineCharsToString(char *s)
     char *prev_s = calloc(strlen(s) + 1, sizeof(char));
     strcpy(prev_s, s);
     unsigned len_s = strlen(s) - 2;
-    unsigned len_of_new_string = 2 * (len_s) / NEW_LINE_AT + len_s - 1;
+    unsigned len_of_new_string = 2 * (len_s) / NEW_LINE_AT + len_s + 1;
     free(s);
-    s = malloc(len_of_new_string * sizeof(char));
+    s = calloc(len_of_new_string, sizeof(char));
     int i = 0, j = 0;
     while (i < len_s && j < len_of_new_string)
     {
@@ -93,7 +88,7 @@ char *addEndLineCharsToString(char *s)
     }
     free(prev_s);
     s[j++] = '\r';
-    s[j++] = '\n';
+    s[j] = '\n';
     return s;
 }
 
@@ -113,17 +108,23 @@ void zad5(char *read_path, char *write_path)
 {
 
     M_FILE dane = M_OPEN_READ;
+    if (dane == M_NULL)
+    {
+        printf("%s", "There is no file dane.txt at given path");
+        exit(-1);
+    }
     char *first_buffer = inputString(dane, START_SIZE);
+    M_FILE ptr = M_OPEN;
     while (first_buffer != NULL)
     {
-        M_FILE ptr = M_OPEN;
         char *string = replaceStringIfNeeded(first_buffer);
         M_WRITE;
-        M_CLOSE(ptr);
         free(string);
         first_buffer = inputString(dane, 10);
     }
+    M_CLOSE(ptr);
 }
+
 double subtract_time(clock_t start, clock_t end)
 {
     return (double)(end - start) / (double)sysconf(_SC_CLK_TCK);
@@ -148,8 +149,15 @@ void write_to_file_and_console(char *procedure_name, char *file_name, clock_t re
 
     fclose(ptr);
 }
+
 int main(int argc, char **argv)
 {
+    if (argc < 2)
+    {
+        printf("%s", "too less arguments!");
+        exit(-1);
+    }
+
     clock_t real_time[2];
     struct tms **tms_time = malloc(2 * sizeof(struct tms *));
     for (int i = 0; i < 2; i++)
@@ -157,7 +165,7 @@ int main(int argc, char **argv)
         tms_time[i] = (struct tms *)malloc(sizeof(struct tms));
     }
     real_time[0] = times(tms_time[0]);
-    zad5("in.txt", "out.txt");
+    zad5(argv[2], argv[3]);
     real_time[1] = times(tms_time[1]);
 
     write_to_file_and_console(argv[1], "pomiar_zad_5.txt", real_time, tms_time);
