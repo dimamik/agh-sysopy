@@ -1,0 +1,7 @@
+fork:
+    Sygnały, czekające w przodku nie są widoczne dla dzieci
+    Proces potomny dziedziczy "maski", "handlery" i "ignory"
+exec:
+    exec nie dziedziczy handlera (bo nie ma dostępu do kodu handlera)
+    exec dziedziczy oczekujące sygnały (kopiuje)
+    exec dziedziczy maski i ignory
