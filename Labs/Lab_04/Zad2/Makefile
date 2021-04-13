@@ -4,3 +4,4 @@ all:
 	./main siginfo child
 	./main siginfo alarm
 	./main SA_RESTART__SA_NOCLDSTOP__SA_NOCLDWAIT
+	./main SA_NODEFER

@@ -1,15 +1,7 @@
-//
-// Created by dzmitry on 10.04.2021.
-//
-
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <errno.h>
-#include <sys/wait.h>
 #include "mode.h"
 
 int sig_count = 0;
@@ -18,10 +10,13 @@ int last_signal;
 int catcher_get = 0;
 signal_mode_t mode;
 
+int got_signal = 0;
+
 void handler_SIG_FIRST(int sig_no, siginfo_t *sigInfo, void *ucontext) {
 //    printf("Hello in handler_SIG_FIRST\n");
     sig_count++;
     catcher_get = sigInfo->si_value.sival_int;
+    got_signal = 1;
 
 }
 
@@ -30,6 +25,7 @@ void handler_SIG_SECOND(int sig_no, siginfo_t *sigInfo, void *ucontext) {
     last_signal = sig_no;
     catcher_get = sigInfo->si_value.sival_int;
 //    printf("Setting CATCHER_GET to %d",catcher_get);
+    got_signal = 1;
 }
 
 
@@ -70,6 +66,7 @@ int main(int argc, char **argv) {
 
 //    Sending signals
     for (int i = 0; i < n; ++i) {
+        got_signal = 0;
         if (mode == SIGQUEUE) {
             if (sigqueue(catcher_pid, SIG_FIRST(mode), (union sigval) {}) == 0) {
 //                printf("Signal sent successfully!!\n");
@@ -80,12 +77,14 @@ int main(int argc, char **argv) {
             kill(catcher_pid, SIG_FIRST(mode));
 
         }
+        while (!got_signal) {
 
-        sigset_t set_to_wait;
-        sigfillset(&set_to_wait);
-        sigdelset(&set_to_wait, SIG_FIRST(mode));
-        sigdelset(&set_to_wait, SIG_SECOND(mode));
-        sigsuspend(&set_to_wait);
+        }
+//        sigset_t set_to_wait;
+//        sigfillset(&set_to_wait);
+//        sigdelset(&set_to_wait, SIG_FIRST(mode));
+//        sigdelset(&set_to_wait, SIG_SECOND(mode));
+//        sigsuspend(&set_to_wait);
 
     }
 

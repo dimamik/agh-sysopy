@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdlib.h>
 #include "mode.h"
 
 int sig_count = 0;
@@ -34,11 +33,8 @@ void handler_SIG_SECOND(int sig_no, siginfo_t *sigInfo, void *ucontext) {
 
 
 int main(int argc, char **argv) {
-
-
     mode = get_mode_type(argv[1]);
     printf("Process ID: %d\n", getpid());
-
 
     sigset_t mask_for_process;
     sigfillset(&mask_for_process);
@@ -55,7 +51,6 @@ int main(int argc, char **argv) {
     sig_act_usr2.sa_flags = SA_SIGINFO;
     sig_act_usr2.sa_sigaction = handler_SIG_SECOND;
     sigaction(SIG_SECOND(mode), &sig_act_usr2, NULL);
-
 
     pause();
 

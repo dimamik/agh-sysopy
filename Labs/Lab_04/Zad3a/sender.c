@@ -15,7 +15,7 @@
 int sig_count = 0;
 int last_signal;
 
-int  catcher_get = 0;
+int catcher_get = 0;
 
 void handler_SIG_FIRST(int sig_no, siginfo_t *sigInfo, void *ucontext) {
 //    printf("Hello in handler_SIG_FIRST\n");
@@ -114,9 +114,9 @@ int main(int argc, char **argv) {
 
 //    Now summing up the results
 
-    printf("Sent %d signals",n);
+    printf("Sent %d signals", n);
     if (mode == SIGQUEUE)
-        printf(", Catcher get %d signals",catcher_get);
-    printf(", received back %d signals\nWas working in mode: %s\n",sig_count,argv[3]);
+        printf(", Catcher get %d signals", catcher_get);
+    printf(", received back %d signals\nWas working in mode: %s\n", sig_count, argv[3]);
 
 }

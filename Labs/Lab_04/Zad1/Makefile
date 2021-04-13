@@ -16,4 +16,5 @@ exec:
 	./main ignore exec
 	./main mask  exec
 	./main pending exec
+	# There we are waiting for exception because new executable doesn't have access to previous process handler
 	./main handler exec
