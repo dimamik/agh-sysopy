@@ -219,7 +219,6 @@ int main(int argc, char **argv) {
     while (getline(&line, &line_size, file) != -1) {
         line[strlen(line) - 1] = '\0';
         if (strchr(line, '=') != NULL) {
-//            varCommand[curr_var] = malloc(sizeof(var_command_t));
             varCommand[curr_var++] = extract_variable(line);
             list_size++;
         } else {

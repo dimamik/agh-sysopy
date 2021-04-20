@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     for (unsigned int i = 0; i < number_of_producers; i++) {
         char randomLetter = (char) ('A' + (random() % 26));
         char file_name[50];
-        sprintf(file_name, "res/%s/%d.txt", type_of_test, i);
+        sprintf(file_name, "res/%s/in/%d.txt", type_of_test, i);
         FILE *f = fopen(file_name, "w");
         char *line = calloc((size + 3), sizeof(char));
         for (int j = 0; j < size; j++) {
@@ -54,17 +54,23 @@ int main(int argc, char **argv) {
             char buff[5];
             sprintf(buff, "%d", i);
             char file_name[50];
-            sprintf(file_name, "res/%s/%d.txt", type_of_test, i);
+            sprintf(file_name, "res/%s/in/%d.txt", type_of_test, i);
             execl("./producer", "./producer", "pipe", buff, file_name, N, NULL);
             perror("There is a problem in producer\n");
             exit(-1);
         }
         sleep(1);
     }
-    if (fork() == 0) {
-        execlp("./consumer", "./consumer", "pipe", "output_consumer.txt", N, NULL);
-        exit(-1);
+
+    for (int i = 0; i < number_of_consumers; ++i) {
+        if (fork() == 0) {
+            char file_name[50];
+            sprintf(file_name, "res/%s/out/%d.txt", type_of_test, i);
+            execlp("./consumer", "./consumer", "pipe", file_name, N, NULL);
+            exit(-1);
+        }
     }
+
     wait(NULL);
     for (int i = 0; i < number_of_producers; i++) wait(NULL);
 

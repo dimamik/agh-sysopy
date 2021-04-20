@@ -68,7 +68,8 @@ int main(int argc, char **argv) {
             exit(-1);
         }
 
-        FILE *text_file = fopen(argv[2], "r+");
+//        FILE *text_file = fopen(argv[2], "r+");
+        FILE *text_file = fopen(argv[2], "w+");
         if (text_file == NULL) {
             exit(-1);
         }

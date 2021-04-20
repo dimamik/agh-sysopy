@@ -22,12 +22,14 @@ int main(int argc, char **argv) {
         int pipe_file = open(path_to_pipe, O_WRONLY);
         if (pipe_file == -1) {
             perror("Can't open pipe\n");
+
             exit(-1);
         }
 
         int text_file = open(path_to_txt, O_RDONLY);
         if (text_file == -1) {
-            perror("Can't open pipe\n");
+            perror("Can't open txt\n");
+            printf("%s", path_to_txt);
             exit(-1);
         }
         ssize_t read_symbols = 0;

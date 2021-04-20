@@ -1,0 +1,119 @@
+Ponizej znajduja sie wyniki wykonania make tests, w ktorych kolejno jest uruchamiany main z argumentami, a potem
+scrypt w pythonie, testujacy, czy wszystkie wyrazy (literki) sie pojawily w odpowiednich plikach w
+odpowiednim miejscu. Jak wszystko jest dobrze, to wypisuje All Tests Passed, i Tests Failed w przeciwnym przypadku.
+
+W moich eksperymentach ponizej wszystkie testy przeszly, co swiadczy o dobrym ustawiu potoku nazwanego, nawet po przekroczeniu
+PIPE_BUF.
+
+
+------------------------------------------Python Testing Script-------------------------------------------
+
+
+| Type of testing: many_to_many
+
+| Description: Many producers are sending data to many consumers
+
+| Parameters:
+        Number of chars to send: 10
+        Number of producers: 5
+        Size of single string in line: 50
+        Number of consumers: 5
+
+______________________________________________________________________________________________________
+
+
+------------------------------------------All Tests Passed!-------------------------------------------
+
+
+------------------------------------------Python Testing Script-------------------------------------------
+
+
+| Type of testing: many_to_many
+
+| Description: Many producers are sending data to many consumers
+
+| Parameters:
+        Number of chars to send: 10000
+        Number of producers: 5
+        Size of single string in line: 50000
+        Number of consumers: 5
+
+______________________________________________________________________________________________________
+
+
+------------------------------------------All Tests Passed!-------------------------------------------
+
+
+------------------------------------------Python Testing Script-------------------------------------------
+
+
+| Type of testing: one_to_many
+
+| Description: Many producers are sending data to one consumer
+
+| Parameters:
+        Number of chars to send: 10
+        Number of producers: 1
+        Size of single string in line: 50
+        Number of consumers: 5
+
+______________________________________________________________________________________________________
+
+
+------------------------------------------All Tests Passed!-------------------------------------------
+
+
+------------------------------------------Python Testing Script-------------------------------------------
+
+
+| Type of testing: one_to_many
+
+| Description: Many producers are sending data to one consumer
+
+| Parameters:
+        Number of chars to send: 10000
+        Number of producers: 5
+        Size of single string in line: 500000
+        Number of consumers: 5
+
+______________________________________________________________________________________________________
+
+
+------------------------------------------All Tests Passed!-------------------------------------------
+
+------------------------------------------Python Testing Script-------------------------------------------
+
+
+| Type of testing: many_to_one
+
+| Description: One producer is sending data to many consumers
+
+| Parameters:
+        Number of chars to send: 10
+        Number of producers: 5
+        Size of single string in line: 50
+        Number of consumers: 1
+
+______________________________________________________________________________________________________
+
+
+------------------------------------------All Tests Passed!-------------------------------------------
+
+------------------------------------------Python Testing Script-------------------------------------------
+
+
+| Type of testing: many_to_one
+
+| Description: One producer is sending data to many consumers
+
+| Parameters:
+        Number of chars to send: 10000
+        Number of producers: 5
+        Size of single string in line: 500000
+        Number of consumers: 5
+
+______________________________________________________________________________________________________
+
+
+------------------------------------------All Tests Passed!-------------------------------------------
+
