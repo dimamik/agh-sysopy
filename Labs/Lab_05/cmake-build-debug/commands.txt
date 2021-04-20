@@ -1,6 +1,6 @@
 składnik1 = cat /etc/passwd | wc -l
 składnik2 = ls
-składnik3 = grep M
+składnik3 = grep 'Z'
 
 składnik1
 składnik2 | składnik3

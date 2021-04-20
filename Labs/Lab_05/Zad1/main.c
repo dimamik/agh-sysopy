@@ -1,16 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <unistd.h>
-#include <assert.h>
 
 
-int MAX_LINE_SIZE = 256;
 int MAX_COMMANDS_PER_VAR = 15;
 int MAX_WORDS_PER_COMMAND = 5;
 int MAX_VARIABLES = 10;
@@ -23,6 +18,14 @@ typedef struct {
     int size_of_list;
 } command_t;
 
+void free_command(command_t *command) {
+    for (int i = 0; i < command->size_of_list; ++i) {
+        free(command->list_of_single_commands[i]);
+    }
+    free(command->list_of_single_commands);
+    free(command);
+}
+
 /**
  * Variable that wraps the command
  */
@@ -32,6 +35,22 @@ typedef struct {
     int size;
 } var_command_t;
 
+void free_var_command(var_command_t *varCommand) {
+    free(varCommand->var_name);
+    for (int i = 0; i < varCommand->size; ++i) {
+        free_command(varCommand->list_of_commands[i]);
+    }
+    free(varCommand->list_of_commands);
+    free(varCommand);
+}
+
+void free_var_command_list(var_command_t **varCommand, int size) {
+
+    for (int i = 0; i < size; ++i) {
+        free_var_command(varCommand[i]);
+    }
+    free(varCommand);
+}
 
 void remove_spaces(char *s) {
     const char *d = s;
@@ -39,10 +58,10 @@ void remove_spaces(char *s) {
         while (*d == ' ') {
             ++d;
         }
-    } while (*s++ = *d++);
+    } while ((*s++ = *d++));
 }
 
-void *create_command(char *line, command_t *command) {
+void create_command(char *line, command_t *command) {
     char *save;
 
     char *single_command = strtok_r(line, " ", &save);
@@ -54,8 +73,7 @@ void *create_command(char *line, command_t *command) {
         command->list_of_single_commands[position] = calloc(strlen(single_command) + 1, sizeof(char));
         strcpy(command->list_of_single_commands[position++], single_command);
     }
-
-
+    command->size_of_list = position;
 }
 
 
@@ -130,10 +148,8 @@ void connect_and_execute_commands(var_command_t **varCommand, char *commands_to_
                    current_command->list_of_commands[current_index]->list_of_single_commands[2]);
             pid_t pid = fork();
             if (pid == 0) {
-//                TODO The problem is somewhere here!
 
                 if (first_time_there != 1) {
-//                    printf("Hello there!\n");
                     dup2(prev[0], STDIN_FILENO);
                     close(prev[1]);
                 }
@@ -141,11 +157,9 @@ void connect_and_execute_commands(var_command_t **varCommand, char *commands_to_
                 dup2(current[1], STDOUT_FILENO);
                 if (execvp(current_command->list_of_commands[current_index]->list_of_single_commands[0],
                            current_command->list_of_commands[current_index]->list_of_single_commands) == -1) {
-//                    perror("Problem with execution of script!\n");
                     exit(1);
                 }
                 command_number++;
-//                exit(0);
             }
 
             first_time_there = 0;
@@ -172,15 +186,13 @@ void connect_and_execute_commands(var_command_t **varCommand, char *commands_to_
                    current_command->list_of_commands[current_index]->list_of_single_commands) == -1) {
             exit(1);
         }
-//        exit(0);
     }
     for (int j = 0; j < command_number + 3; j++) {
         wait(NULL);
     }
 
-//    wait(NULL);
     printf("--------------------\n\n");
-//    sleep(1);
+
 }
 
 
@@ -198,18 +210,16 @@ int main(int argc, char **argv) {
     }
     char *line = NULL;
     size_t line_size = 0;
-    char *var_name = NULL;
-    char *var_body = NULL;
+
     int list_size = 0;
     int curr_var = 0;
     var_command_t **varCommand = malloc(sizeof(var_command_t *) * MAX_VARIABLES);
 
 
     while (getline(&line, &line_size, file) != -1) {
-//        TODO Check if this is var creation
         line[strlen(line) - 1] = '\0';
         if (strchr(line, '=') != NULL) {
-            varCommand[curr_var] = malloc(sizeof(var_command_t));
+//            varCommand[curr_var] = malloc(sizeof(var_command_t));
             varCommand[curr_var++] = extract_variable(line);
             list_size++;
         } else {
@@ -218,16 +228,6 @@ int main(int argc, char **argv) {
         }
 
     }
-
-
-//    char **commands = malloc(sizeof(char *) * 2);
-//    commands[0] = malloc(sizeof(char) * 50);
-//    commands[1] = malloc(sizeof(char) * 50);
-//    strcpy(commands[0], "cat");
-//    strcpy(commands[1], "/etc/passwd");
-//
-//    if (execvp(commands[0], commands) == -1) {
-//        exit(1);
-//    }
-
+    free_var_command_list(varCommand, curr_var);
+    free(line);
 }

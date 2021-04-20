@@ -1,0 +1,12 @@
+"/var/mail/dzmitry": 10 messages 10 unread
+>U   1 Dzmitry            Sun Apr 18 09:14  16/469   SomeTitle
+ U   2 Dzmitry            Sun Apr 18 09:14  15/445   SomeTitle1
+ U   3 Dzmitry            Sun Apr 18 09:14  15/443   SomeTitle
+ U   4 Dzmitry            Sun Apr 18 09:14  15/445   SomeTitle1
+ U   5 Dzmitry            Sun Apr 18 09:15  15/443   SomeTitle
+ U   6 Dzmitry            Sun Apr 18 09:15  15/445   SomeTitle1
+ U   7 Dzmitry            Sun Apr 18 09:17  15/443   SomeTitle
+ U   8 Dzmitry            Sun Apr 18 09:17  15/446   SomeTitle1
+ U   9 user1@ubuntu       Sun Apr 18 10:24  15/443   MailTitle
+ U  10 Dzmitry            Sun Apr 18 10:26  15/449   Title
+? ^C^Z
