@@ -3,4 +3,4 @@ project(Lab_06 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Lab_06 Zad2/config.c Zad2/server.c Zad2/client.c)
+add_executable(Lab_06 Zad2/config.c Zad2/client.c)

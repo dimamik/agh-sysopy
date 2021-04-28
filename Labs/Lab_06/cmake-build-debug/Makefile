@@ -196,33 +196,6 @@ Zad2/config.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/config.c.s
 .PHONY : Zad2/config.c.s
 
-Zad2/server.o: Zad2/server.c.o
-
-.PHONY : Zad2/server.o
-
-# target to build an object file
-Zad2/server.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/server.c.o
-.PHONY : Zad2/server.c.o
-
-Zad2/server.i: Zad2/server.c.i
-
-.PHONY : Zad2/server.i
-
-# target to preprocess a source file
-Zad2/server.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/server.c.i
-.PHONY : Zad2/server.c.i
-
-Zad2/server.s: Zad2/server.c.s
-
-.PHONY : Zad2/server.s
-
-# target to generate assembly for a file
-Zad2/server.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/server.c.s
-.PHONY : Zad2/server.c.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -238,9 +211,6 @@ help:
 	@echo "... Zad2/config.o"
 	@echo "... Zad2/config.i"
 	@echo "... Zad2/config.s"
-	@echo "... Zad2/server.o"
-	@echo "... Zad2/server.i"
-	@echo "... Zad2/server.s"
 .PHONY : help
 
 

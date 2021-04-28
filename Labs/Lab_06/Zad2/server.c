@@ -1,4 +1,3 @@
-
 #include "config.h"
 
 mqd_t server_queue;
@@ -25,7 +24,6 @@ int get_free_client_id() {
 }
 
 void stop_command() {
-
     for (int i = 0; i < MAX_CLIENTS_NO; ++i) {
         if (clients[i] != NULL) {
             printf("Sending stop message to client %d\n", i);
@@ -33,7 +31,7 @@ void stop_command() {
         }
     }
     close_queue(server_queue);
-    delete_queue(QUEUE_FILENAME);
+    unlink_queue(QUEUE_FILENAME);
     printf("Server is successfully shut down\n");
 }
 
@@ -45,7 +43,7 @@ void disconnect(int client1, int client2) {
     }
 
     send_message_to_queue(clients[client2]->client_queue_descr, "", DISCONNECT);
-    printf("Sent disconnect message to %d",client2);
+    printf("Sent disconnect message to %d\n", client2);
 }
 
 void stop_client_command(char *message) {
@@ -63,7 +61,7 @@ void stop_client_command(char *message) {
     printf("Client %d has stopped\n", client_id);
 }
 
-void disconnect_command(char *message) {
+void disconnect_command_from_client(char *message) {
     int client1;
     sscanf(message, "%d", &client1);
     int client2;
@@ -124,7 +122,7 @@ void init_command(char *message) {
     client->client_id = client_id;
     client->client_queue_name = malloc(QUEUE_FILENAME_MAX_LEN * sizeof(char));
     sscanf(message, "%s", client->client_queue_name);
-    client->client_queue_descr = get_queue(client->client_queue_name);
+    client->client_queue_descr = get_queue_by_name(client->client_queue_name);
 
     client->connected_client_id = -1;
     client->is_available = 1;
@@ -176,18 +174,17 @@ void connect_command(char *message) {
     free(req_m);
 }
 
-// TODO Check
 void handle_queue_message() {
     char *message = calloc(MAX_MESSAGE_TEXT_LENGTH, sizeof(char));
     unsigned int type;
     get_message_from_queue(server_queue, message, &type);
-    printf("Received a message: %s\n",message);
+    printf("Received a message: %s\n", message);
     switch (type) {
         case STOP:
             stop_client_command(message);
             break;
         case DISCONNECT:
-            disconnect_command(message);
+            disconnect_command_from_client(message);
             break;
         case LIST:
             list_command(message);

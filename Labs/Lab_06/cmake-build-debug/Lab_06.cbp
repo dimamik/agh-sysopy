@@ -85,9 +85,6 @@
 		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_06/Zad2/config.h">
 			<Option target="Lab_06"/>
 		</Unit>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_06/Zad2/server.c">
-			<Option target="Lab_06"/>
-		</Unit>
 		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_06/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

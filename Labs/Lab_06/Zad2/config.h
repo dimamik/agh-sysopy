@@ -1,7 +1,3 @@
-//
-// Created by dzmitry on 4/25/21.
-//
-
 #ifndef LAB_06_CONFIG_H
 #define LAB_06_CONFIG_H
 
@@ -18,7 +14,6 @@
 
 #define MAX_MESSAGE_TEXT_LENGTH 4000
 #define MAX_CLIENTS_NO 10
-#define MAX_MESSAGE_SIZE sizeof(message_t) - sizeof(long)
 #define INTERRUPT SIGUSR1
 #define QUEUE_FILENAME "/posix-server"
 #define QUEUE_FILENAME_MAX_LEN 20
@@ -44,28 +39,20 @@ typedef struct {
 
 } client_t;
 
-
 mqd_t create_queue(char *name);
 
-mqd_t get_queue(char *name);
+mqd_t get_queue_by_name(char *name);
 
-
-/**
- * Sends message to queue
- * @param queue_id
- * @param message
- */
 void send_message_to_queue(mqd_t queue_descr,
                            char *message, unsigned int type);
 
-
-void delete_queue(char *name);
+void unlink_queue(char *name);
 
 void close_queue(mqd_t queue_descr);
 
 int string_to_int(char *string);
 
-void register_notification(mqd_t queue_descriptor, struct sigevent *s_sigevent);
+void add_notification(mqd_t queue_descr, struct sigevent *s_sigevent);
 
 void get_message_from_queue(mqd_t queue_descr, char *msg, unsigned int *type);
 
