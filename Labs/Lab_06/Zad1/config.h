@@ -14,19 +14,19 @@
 #include <unistd.h>
 #include <signal.h>
 
-#define MAX_MESSAGE_TEXT_LENGTH 150
+#define MAX_MESSAGE_TEXT_LENGTH 4000
 #define MAX_CLIENTS_NO 10
 #define MAX_MESSAGE_SIZE sizeof(message_t) - sizeof(long)
 #define INTERRUPT SIGUSR1
 
 // Types of commands
-# define STOP 0
-# define DISCONNECT 1
-# define LIST 2
-# define CONNECT 3
-# define INIT 4
-# define MESSAGE 5
-# define RESPOND_ERROR 6
+# define STOP 1
+# define DISCONNECT 2
+# define LIST 3
+# define CONNECT 4
+# define INIT 5
+# define MESSAGE 6
+# define RESPOND_ERROR 7
 
 
 typedef struct {

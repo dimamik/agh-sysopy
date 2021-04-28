@@ -142,59 +142,86 @@ Lab_06/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/build
 .PHONY : Lab_06/fast
 
-client.o: client.c.o
+Zad2/client.o: Zad2/client.c.o
 
-.PHONY : client.o
-
-# target to build an object file
-client.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/client.c.o
-.PHONY : client.c.o
-
-client.i: client.c.i
-
-.PHONY : client.i
-
-# target to preprocess a source file
-client.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/client.c.i
-.PHONY : client.c.i
-
-client.s: client.c.s
-
-.PHONY : client.s
-
-# target to generate assembly for a file
-client.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/client.c.s
-.PHONY : client.c.s
-
-config.o: config.c.o
-
-.PHONY : config.o
+.PHONY : Zad2/client.o
 
 # target to build an object file
-config.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/config.c.o
-.PHONY : config.c.o
+Zad2/client.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/client.c.o
+.PHONY : Zad2/client.c.o
 
-config.i: config.c.i
+Zad2/client.i: Zad2/client.c.i
 
-.PHONY : config.i
+.PHONY : Zad2/client.i
 
 # target to preprocess a source file
-config.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/config.c.i
-.PHONY : config.c.i
+Zad2/client.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/client.c.i
+.PHONY : Zad2/client.c.i
 
-config.s: config.c.s
+Zad2/client.s: Zad2/client.c.s
 
-.PHONY : config.s
+.PHONY : Zad2/client.s
 
 # target to generate assembly for a file
-config.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/config.c.s
-.PHONY : config.c.s
+Zad2/client.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/client.c.s
+.PHONY : Zad2/client.c.s
+
+Zad2/config.o: Zad2/config.c.o
+
+.PHONY : Zad2/config.o
+
+# target to build an object file
+Zad2/config.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/config.c.o
+.PHONY : Zad2/config.c.o
+
+Zad2/config.i: Zad2/config.c.i
+
+.PHONY : Zad2/config.i
+
+# target to preprocess a source file
+Zad2/config.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/config.c.i
+.PHONY : Zad2/config.c.i
+
+Zad2/config.s: Zad2/config.c.s
+
+.PHONY : Zad2/config.s
+
+# target to generate assembly for a file
+Zad2/config.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/config.c.s
+.PHONY : Zad2/config.c.s
+
+Zad2/server.o: Zad2/server.c.o
+
+.PHONY : Zad2/server.o
+
+# target to build an object file
+Zad2/server.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/server.c.o
+.PHONY : Zad2/server.c.o
+
+Zad2/server.i: Zad2/server.c.i
+
+.PHONY : Zad2/server.i
+
+# target to preprocess a source file
+Zad2/server.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/server.c.i
+.PHONY : Zad2/server.c.i
+
+Zad2/server.s: Zad2/server.c.s
+
+.PHONY : Zad2/server.s
+
+# target to generate assembly for a file
+Zad2/server.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_06.dir/build.make CMakeFiles/Lab_06.dir/Zad2/server.c.s
+.PHONY : Zad2/server.c.s
 
 # Help Target
 help:
@@ -205,12 +232,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Lab_06"
-	@echo "... client.o"
-	@echo "... client.i"
-	@echo "... client.s"
-	@echo "... config.o"
-	@echo "... config.i"
-	@echo "... config.s"
+	@echo "... Zad2/client.o"
+	@echo "... Zad2/client.i"
+	@echo "... Zad2/client.s"
+	@echo "... Zad2/config.o"
+	@echo "... Zad2/config.i"
+	@echo "... Zad2/config.s"
+	@echo "... Zad2/server.o"
+	@echo "... Zad2/server.i"
+	@echo "... Zad2/server.s"
 .PHONY : help
 
 

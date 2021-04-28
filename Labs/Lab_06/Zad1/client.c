@@ -1,11 +1,13 @@
+#include <time.h>
 #include "config.h"
 
 int client_id;
-int server_queue;
+int server_queue = -1;
 int queue_id;
 int am_connected_with_id = -1;
 int am_connected_with_queue = -1;
 int am_connected_with_process = -1;
+int active = 1;
 
 void init_queue() {
     key_t key = generate_unique_key();
@@ -33,18 +35,29 @@ void sigint_handler() {
     exit(0);
 }
 
-void stop_command(message_t *message) {
-    delete_queue(queue_id);
-    if (message == NULL) {
 
+void stop_command(message_t *message) {
+    if (!active) {
+        return;
+    } else {
+        active = 0;
+        if (message == NULL) {
+
+//        Send stop to server
+            message_t request;
+            request.message_type = STOP;
+            request.sender_id = client_id;
+            send_message_to_queue(server_queue, &request);
+
+        }
+        delete_queue(queue_id);
+        printf("Client has been stopped\n");
+        exit(0);
     }
 
 
 }
 
-void list_command(message_t *message) {
-
-}
 
 void connect_from_server(message_t *message) {
     am_connected_with_queue = string_to_int(message->message_text);
@@ -75,8 +88,6 @@ void send_message(char *text) {
         fprintf(stderr, "Can't send message, try connecting with somebody!\n");
         return;
     }
-
-
     message_t message;
     message.message_type = MESSAGE;
     sprintf(message.message_text, "%s", text);
@@ -86,6 +97,10 @@ void send_message(char *text) {
 }
 
 
+void get_list_from_server(message_t *respond) {
+    printf("%s", respond->message_text);
+}
+
 void sig_interrupt_handler() {
     message_t message;
     get_message_instant(queue_id, &message);
@@ -94,7 +109,7 @@ void sig_interrupt_handler() {
             stop_command(&message);
             break;
         case LIST:
-            list_command(&message);
+            get_list_from_server(&message);
             break;
         case CONNECT:
             connect_from_server(&message);
@@ -127,7 +142,13 @@ void disconnect_command() {
 }
 
 
-void get_list() {
+void get_list_request() {
+    message_t request;
+
+    request.message_type = LIST;
+    request.sender_pid = getpid();
+    request.sender_id = client_id;
+    send_message_to_queue(server_queue, &request);
 
 }
 
@@ -140,6 +161,10 @@ void get_list() {
 void connect_command(int client_to_connect_id) {
     if (am_connected_with_id != -1) {
         fprintf(stderr, "Can't connect because is already connected!\n");
+        return;
+    }
+    if (client_to_connect_id == client_id) {
+        fprintf(stderr, "Can't connect with yourself!\n");
         return;
     }
     message_t request;
@@ -167,7 +192,7 @@ void input_handler(char *line) {
     } else if (strcmp("MESSAGE", first_word) == 0) {
         send_message(context);
     } else if (strcmp("LIST", first_word) == 0) {
-        get_list();
+        get_list_request();
     }
 
 }

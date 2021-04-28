@@ -64,14 +64,14 @@ void send_message_to_queue(int queue_id, message_t *message) {
 }
 
 void get_message_with_wait(int queue_id, message_t *message) {
-    if (msgrcv(queue_id, message, MAX_MESSAGE_SIZE, -10, 0) == -1) {
+    if (msgrcv(queue_id, message, MAX_MESSAGE_SIZE, -8, 0) == -1) {
         fprintf(stderr, "Error in get_message: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 }
 
 void get_message_instant(int queue_id, message_t *message) {
-    if (msgrcv(queue_id, message, MAX_MESSAGE_SIZE, -10, IPC_NOWAIT) == -1) {
+    if (msgrcv(queue_id, message, MAX_MESSAGE_SIZE, -8, IPC_NOWAIT) == -1) {
         fprintf(stderr, "Error in get_message_instant: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
