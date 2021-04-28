@@ -153,7 +153,8 @@ void connect_command(char *message) {
 
     unsigned int respond;
     char *req_m = calloc(MAX_MESSAGE_TEXT_LENGTH, sizeof(char));
-    if (client_2 < 0 || client_2 > MAX_CLIENTS_NO || !does_client_exist(client_1) || !does_client_exist(client_2) ||
+    if (client_2 < 0 || client_2 > MAX_CLIENTS_NO || !does_client_exist(client_1)
+        || !does_client_exist(client_2) ||
         !clients[client_2]->is_available) {
         respond = RESPOND_ERROR;
     } else {

@@ -27,7 +27,8 @@ void stop_command(const char *message) {
 
             send_message_to_queue(server_queue_descriptor, request, STOP);
         }
-
+        close_queue(queue_descriptor);
+        delete_queue(queue_filename);
         printf("Client has been stopped\n");
         exit(0);
     }
@@ -45,7 +46,7 @@ void connect_from_server(char *message) {
 
     am_connected_with_queue_descriptor = get_queue(am_connected_with_queue_name);
 
-    printf("I am connected with %d\n", am_connected_with_id);
+    printf("I am connected with %d and its_queue_name is %s\n", am_connected_with_id,am_connected_with_queue_name);
 }
 
 void respond_error() {
@@ -57,6 +58,13 @@ void disconnect() {
     printf("Disconnected from the client\n");
 }
 
+void notifications() {
+    struct sigevent s_sigevent;
+    s_sigevent.sigev_signo = INTERRUPT;
+    s_sigevent.sigev_notify = SIGEV_SIGNAL;
+
+    register_notification(queue_descriptor, &s_sigevent);
+}
 void receive_message(char *message) {
     printf("%s", message);
 }
@@ -80,10 +88,10 @@ void get_list_from_server(char *respond) {
 void sig_interrupt_handler(int signo) {
 
     char *message = malloc(MAX_MESSAGE_TEXT_LENGTH * sizeof(char));
-
+    printf("Received a message: %s\n",message);
     unsigned int type;
     get_message_from_queue(queue_descriptor, message, &type);
-    printf("Received a message: %s\n",message);
+//    printf("Received a message: %s\n",message);
     switch (type) {
         case STOP:
             stop_command(message);
@@ -106,6 +114,7 @@ void sig_interrupt_handler(int signo) {
             fprintf(stderr, "Unsupported message format %s\n", message);
             break;
     }
+    notifications();
 }
 
 void disconnect_command() {
@@ -204,13 +213,6 @@ void log_in_to_server() {
     printf("Client successfully connected to server with client_id: %d\n", client_id);
 }
 
-void notifications() {
-    struct sigevent s_sigevent;
-    s_sigevent.sigev_signo = SIGRTMIN;
-    s_sigevent.sigev_notify = SIGEV_SIGNAL;
-
-    register_notification(queue_descriptor, &s_sigevent);
-}
 
 int main() {
     atexit(clear_all);
