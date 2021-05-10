@@ -35,13 +35,19 @@
 #define S_BAKERY_IS_FULL 4
 
 
-#define PREPARATION_TIME (rand() % 2 + 1)
-//#define PREPARATION_TIME (rand() % 1 + 1)
-#define BAKING_TIME (rand() % 3 + 4)
+float randomFloat(float min, float max){
+    return ((max - min) * ((float)rand() / RAND_MAX)) + min;
+}
+
+
+#define COOKING_TIME (randomFloat(1,2))
+//#define COOKING_TIME (rand() % 1 + 1)
+#define BAKING_TIME (randomFloat(4,5))
 //#define BAKING_TIME (rand() % 2 + 1)
-#define DELIVERY_TIME (rand() % 3 + 4)
+#define DELIVERY_TIME (randomFloat(3,4))
 
 #define MAX(x,y) ((x>y)?x:y)
+
 
 typedef struct {
     int type;
