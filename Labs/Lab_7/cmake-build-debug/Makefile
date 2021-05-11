@@ -142,140 +142,86 @@ Lab_7/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/build
 .PHONY : Lab_7/fast
 
-common.o: common.c.o
+Zad2/cooker.o: Zad2/cooker.c.o
 
-.PHONY : common.o
-
-# target to build an object file
-common.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/common.c.o
-.PHONY : common.c.o
-
-common.i: common.c.i
-
-.PHONY : common.i
-
-# target to preprocess a source file
-common.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/common.c.i
-.PHONY : common.c.i
-
-common.s: common.c.s
-
-.PHONY : common.s
-
-# target to generate assembly for a file
-common.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/common.c.s
-.PHONY : common.c.s
-
-cooker.o: cooker.c.o
-
-.PHONY : cooker.o
+.PHONY : Zad2/cooker.o
 
 # target to build an object file
-cooker.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/cooker.c.o
-.PHONY : cooker.c.o
+Zad2/cooker.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/cooker.c.o
+.PHONY : Zad2/cooker.c.o
 
-cooker.i: cooker.c.i
+Zad2/cooker.i: Zad2/cooker.c.i
 
-.PHONY : cooker.i
+.PHONY : Zad2/cooker.i
 
 # target to preprocess a source file
-cooker.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/cooker.c.i
-.PHONY : cooker.c.i
+Zad2/cooker.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/cooker.c.i
+.PHONY : Zad2/cooker.c.i
 
-cooker.s: cooker.c.s
+Zad2/cooker.s: Zad2/cooker.c.s
 
-.PHONY : cooker.s
+.PHONY : Zad2/cooker.s
 
 # target to generate assembly for a file
-cooker.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/cooker.c.s
-.PHONY : cooker.c.s
+Zad2/cooker.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/cooker.c.s
+.PHONY : Zad2/cooker.c.s
 
-deliveryman.o: deliveryman.c.o
+Zad2/deliveryman.o: Zad2/deliveryman.c.o
 
-.PHONY : deliveryman.o
+.PHONY : Zad2/deliveryman.o
 
 # target to build an object file
-deliveryman.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/deliveryman.c.o
-.PHONY : deliveryman.c.o
+Zad2/deliveryman.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/deliveryman.c.o
+.PHONY : Zad2/deliveryman.c.o
 
-deliveryman.i: deliveryman.c.i
+Zad2/deliveryman.i: Zad2/deliveryman.c.i
 
-.PHONY : deliveryman.i
+.PHONY : Zad2/deliveryman.i
 
 # target to preprocess a source file
-deliveryman.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/deliveryman.c.i
-.PHONY : deliveryman.c.i
+Zad2/deliveryman.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/deliveryman.c.i
+.PHONY : Zad2/deliveryman.c.i
 
-deliveryman.s: deliveryman.c.s
+Zad2/deliveryman.s: Zad2/deliveryman.c.s
 
-.PHONY : deliveryman.s
+.PHONY : Zad2/deliveryman.s
 
 # target to generate assembly for a file
-deliveryman.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/deliveryman.c.s
-.PHONY : deliveryman.c.s
+Zad2/deliveryman.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/deliveryman.c.s
+.PHONY : Zad2/deliveryman.c.s
 
-main.o: main.c.o
+Zad2/main.o: Zad2/main.c.o
 
-.PHONY : main.o
+.PHONY : Zad2/main.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/main.c.o
-.PHONY : main.c.o
+Zad2/main.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/main.c.o
+.PHONY : Zad2/main.c.o
 
-main.i: main.c.i
+Zad2/main.i: Zad2/main.c.i
 
-.PHONY : main.i
-
-# target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/main.c.i
-.PHONY : main.c.i
-
-main.s: main.c.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/main.c.s
-.PHONY : main.c.s
-
-test.o: test.c.o
-
-.PHONY : test.o
-
-# target to build an object file
-test.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/test.c.o
-.PHONY : test.c.o
-
-test.i: test.c.i
-
-.PHONY : test.i
+.PHONY : Zad2/main.i
 
 # target to preprocess a source file
-test.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/test.c.i
-.PHONY : test.c.i
+Zad2/main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/main.c.i
+.PHONY : Zad2/main.c.i
 
-test.s: test.c.s
+Zad2/main.s: Zad2/main.c.s
 
-.PHONY : test.s
+.PHONY : Zad2/main.s
 
 # target to generate assembly for a file
-test.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/test.c.s
-.PHONY : test.c.s
+Zad2/main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab_7.dir/build.make CMakeFiles/Lab_7.dir/Zad2/main.c.s
+.PHONY : Zad2/main.c.s
 
 # Help Target
 help:
@@ -286,21 +232,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Lab_7"
-	@echo "... common.o"
-	@echo "... common.i"
-	@echo "... common.s"
-	@echo "... cooker.o"
-	@echo "... cooker.i"
-	@echo "... cooker.s"
-	@echo "... deliveryman.o"
-	@echo "... deliveryman.i"
-	@echo "... deliveryman.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
+	@echo "... Zad2/cooker.o"
+	@echo "... Zad2/cooker.i"
+	@echo "... Zad2/cooker.s"
+	@echo "... Zad2/deliveryman.o"
+	@echo "... Zad2/deliveryman.i"
+	@echo "... Zad2/deliveryman.s"
+	@echo "... Zad2/main.o"
+	@echo "... Zad2/main.i"
+	@echo "... Zad2/main.s"
 .PHONY : help
 
 

@@ -76,22 +76,13 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/common.c">
+		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/Zad2/cooker.c">
 			<Option target="Lab_7"/>
 		</Unit>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/common.h">
+		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/Zad2/deliveryman.c">
 			<Option target="Lab_7"/>
 		</Unit>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/cooker.c">
-			<Option target="Lab_7"/>
-		</Unit>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/deliveryman.c">
-			<Option target="Lab_7"/>
-		</Unit>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/main.c">
-			<Option target="Lab_7"/>
-		</Unit>
-		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/test.c">
+		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/Zad2/main.c">
 			<Option target="Lab_7"/>
 		</Unit>
 		<Unit filename="/home/dzmitry/4_semestr/AGH_SysOpy/Labs/Lab_7/CMakeLists.txt">

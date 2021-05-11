@@ -29,9 +29,6 @@ int main() {
     pizza_t current_pizza;
     int currently_in_oven;
     int currently_on_table;
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
     while (1) {
 
 
@@ -101,7 +98,6 @@ int main() {
         change_semaphore_value(semaphores_id, S_TABLE_IN_USE, UNLOCKED);
 
     }
-#pragma clang diagnostic pop
 
 
 }

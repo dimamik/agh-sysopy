@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include "common.h"
 
-int main(){
+int main() {
     // ftok to generate unique key
     key_t key = ftok("shmfile", 65);
 

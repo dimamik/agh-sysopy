@@ -13,11 +13,7 @@ int main() {
     srand(getpid() * time(NULL));
     pizza_t current_pizza;
     int currently_on_table;
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
     while (1) {
-
 
 
         change_semaphore_value(semaphores_id, S_DELIVERYMAN_TABLE_IS_EMPTY, DECREASE);
@@ -47,7 +43,6 @@ int main() {
 
 
     }
-#pragma clang diagnostic pop
 
 
 }

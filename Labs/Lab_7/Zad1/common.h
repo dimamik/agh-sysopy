@@ -35,8 +35,8 @@
 #define S_BAKERY_IS_FULL 4
 
 
-float randomFloat(float min, float max){
-    return ((max - min) * ((float)rand() / RAND_MAX)) + min;
+float randomFloat(float min, float max) {
+    return ((max - min) * ((float) rand() / RAND_MAX)) + min;
 }
 
 
@@ -46,7 +46,7 @@ float randomFloat(float min, float max){
 //#define BAKING_TIME (rand() % 2 + 1)
 #define DELIVERY_TIME (randomFloat(3,4))
 
-#define MAX(x,y) ((x>y)?x:y)
+#define MAX(x, y) ((x>y)?x:y)
 
 
 typedef struct {
@@ -55,12 +55,10 @@ typedef struct {
 } pizza_t;
 
 typedef struct {
-    pizza_t list_of_pizzas[MAX(OVEN_SIZE,TABLE_SIZE)];
+    pizza_t list_of_pizzas[MAX(OVEN_SIZE, TABLE_SIZE)];
     int last_added;
     int last_taken;
 } table_t;
-
-
 
 
 typedef struct {

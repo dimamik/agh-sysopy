@@ -45,8 +45,6 @@ int main(int argc, char **argv) {
     delivery_n = atoi(argv[2]);
 
 
-
-
     cooker_processes = calloc(cooker_n, sizeof(int));
     delivery_processes = calloc(delivery_n, sizeof(int));
 
@@ -67,10 +65,9 @@ int main(int argc, char **argv) {
         if ((pid = fork()) == 0) {
 
             execlp("./cooker", "./cooker", NULL);
-        } else if (pid != -1){
+        } else if (pid != -1) {
             cooker_processes[i] = pid;
-        }
-        else{
+        } else {
             perror("ERROR in fork()\n");
         }
     }
