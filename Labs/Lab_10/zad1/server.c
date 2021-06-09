@@ -1,17 +1,18 @@
+#include <signal.h>
 #include "common.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
+#define SERVER_NAME "server"
+pthread_t ping_thread;
 int number_of_clients = 0;
 pthread_mutex_t number_of_clients_mutex = PTHREAD_MUTEX_INITIALIZER;
 client_t list_of_clients[MAXIMUM_NUMBER_OF_CLIENTS] = {0};
 char buf[MAX_MESSAGE_LENGTH];
 game_t list_of_games[MAXIMUM_NUMBER_OF_CLIENTS / 2];
+int local_socket;
+
+int network_socket;
 
 void pair_if_possible(int index);
-
-#define SERVER_NAME "server"
 
 void delete_client_at_index(int index) {
     printf("Deleting client number %d\n", index);
@@ -20,29 +21,32 @@ void delete_client_at_index(int index) {
     number_of_clients--;
 }
 
+int is_pinging = 1;
+
 void ping_loop(void *args) {
 
+    while (is_pinging) {
 
-    pthread_mutex_lock(&number_of_clients_mutex);
+        pthread_mutex_lock(&number_of_clients_mutex);
 
-    for (int i = 0; i < MAXIMUM_NUMBER_OF_CLIENTS; ++i) {
-        if (list_of_clients[i].is_client_present && !list_of_clients[i].ping_pong) {
-            delete_client_at_index(i);
+        for (int i = 0; i < MAXIMUM_NUMBER_OF_CLIENTS; ++i) {
+            if (list_of_clients[i].is_client_present && !list_of_clients[i].ping_pong) {
+                delete_client_at_index(i);
+            }
         }
-    }
 
-    for (int i = 0; i < MAXIMUM_NUMBER_OF_CLIENTS; ++i) {
-        if (list_of_clients[i].is_client_present) {
-            printf("Ping %d client\n", i);
-            sprintf(buf, "%s|ping", SERVER_NAME);
-            my_send(list_of_clients[i].client_fd, buf);
-            list_of_clients[i].ping_pong = 0;
+        for (int i = 0; i < MAXIMUM_NUMBER_OF_CLIENTS; ++i) {
+            if (list_of_clients[i].is_client_present) {
+                printf("Ping %d client\n", i);
+                sprintf(buf, "%s|ping", SERVER_NAME);
+                my_send(list_of_clients[i].client_fd, buf);
+                list_of_clients[i].ping_pong = 0;
+            }
         }
-    }
-    pthread_mutex_unlock(&number_of_clients_mutex);
+        pthread_mutex_unlock(&number_of_clients_mutex);
 
-    sleep(5);
-    ping_loop(args);
+        sleep(5);
+    }
 }
 
 /**
@@ -50,7 +54,7 @@ void ping_loop(void *args) {
  * And when ready - accepts it
  * @return
  */
-int initialize_polling_requests(int local_socket, int network_socket) {
+int initialize_polling_requests() {
     struct pollfd *polling_requests = calloc(number_of_clients + 2,
                                              sizeof(struct pollfd));
     polling_requests[0].fd = local_socket;
@@ -102,9 +106,7 @@ int initialize_local_socket(char *local_socket_path) {
     memset(&local_socket_address, 0, sizeof(struct sockaddr_un));
     local_socket_address.sun_family = AF_UNIX;
     strcpy(local_socket_address.sun_path, local_socket_path);
-
     unlink(local_socket_path);
-
 
 //    Assigning a name to a socket local_socket
     if (bind(local_socket, (struct sockaddr *) &local_socket_address,
@@ -113,12 +115,8 @@ int initialize_local_socket(char *local_socket_path) {
         perror("Error in binding address");
         exit(-1);
     }
-
     listen(local_socket, BACKLOG_MAX);
-
-
     return local_socket;
-
 }
 
 int initialize_network_socket(char *port) {
@@ -138,19 +136,16 @@ int initialize_network_socket(char *port) {
         perror("Error in getaddrinfo: ");
         exit(-1);
     }
-
-    int network_socket = socket(address_of_service_provider->ai_family, address_of_service_provider->ai_socktype,
-                                address_of_service_provider->ai_protocol);
+    network_socket = socket(address_of_service_provider->ai_family, address_of_service_provider->ai_socktype,
+                            address_of_service_provider->ai_protocol);
     if (bind(network_socket, address_of_service_provider->ai_addr, address_of_service_provider->ai_addrlen)) {
         perror("Error in binding address\n");
         exit(-1);
     }
     listen(network_socket, BACKLOG_MAX);
-
     freeaddrinfo(address_of_service_provider);
 
     return network_socket;
-
 }
 
 
@@ -230,7 +225,7 @@ typedef int Arr3[3];
  * @param board
  * @return
  */
-Arr3 *convert_board_to_array(char board[BOARD_SIZE]) {
+Arr3 *convert_board_to_array(const char board[BOARD_SIZE]) {
     static int array[3][3];
 
     for (int i = 0; i < 9; ++i) {
@@ -246,9 +241,7 @@ Arr3 *convert_board_to_array(char board[BOARD_SIZE]) {
                 break;
         }
     }
-
     return array;
-
 }
 
 /**
@@ -284,7 +277,7 @@ int check_if_won(char board[BOARD_SIZE]) {
     }
 
     for (int i = 0; i < 9; ++i) {
-        if (array[i/3][i%3] == -1){
+        if (array[i / 3][i % 3] == -1) {
             return -1;
         }
     }
@@ -303,6 +296,22 @@ int make_move(int player_id, int move) {
     if (list_of_clients[player_id].am_i_cross) {
         symbol = 'X';
     }
+
+//    Check if move is valid
+    if (list_of_games[player_id / 2].board[move] == 'O' ||
+        list_of_games[player_id / 2].board[move] == 'X'
+            ) {
+//        Send message to repeat the move
+        if (list_of_clients[player_id].am_i_cross) {
+            sprintf(buf, "%s|move_cross|%s", SERVER_NAME, list_of_games[player_id / 2].board);
+        } else {
+            sprintf(buf, "%s|move_dot|%s", SERVER_NAME, list_of_games[player_id / 2].board);
+
+        }
+        my_send(list_of_clients[player_id].client_fd, buf);
+        return 0;
+    }
+
     list_of_games[player_id / 2].board[move] = symbol;
     int who_won = check_if_won(list_of_games[player_id / 2].board);
     if (who_won != -1) {
@@ -314,30 +323,33 @@ int make_move(int player_id, int move) {
         } else {
             dot_fd = list_of_clients[player_id].client_fd;
             crosses_fg = list_of_clients[get_connected_opponent(player_id)].client_fd;
-
         }
-
         if (who_won == 1) {
             sprintf(buf, "%s|won", SERVER_NAME);
-
             my_send(crosses_fg, buf);
-
             sprintf(buf, "%s|loose", SERVER_NAME);
-
             my_send(dot_fd, buf);
-        } else {
+        } else if (who_won == 0) {
             sprintf(buf, "%s|won", SERVER_NAME);
-
             my_send(dot_fd, buf);
-
             sprintf(buf, "%s|loose", SERVER_NAME);
-
+            my_send(crosses_fg, buf);
+        } else {
+            sprintf(buf, "%s|remiss", SERVER_NAME);
+            my_send(dot_fd, buf);
+            sprintf(buf, "%s|remiss", SERVER_NAME);
             my_send(crosses_fg, buf);
         }
-
         return 1;
     }
-return 0;
+    return 0;
+}
+
+void copy_boards(char board_dest[BOARD_SIZE], const char board_src[BOARD_SIZE]) {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        board_dest[i] = board_src[i];
+    }
+    board_dest[BOARD_SIZE] = '\0';
 }
 
 void process_command(char *string_command, int socket_descriptor) {
@@ -388,15 +400,20 @@ void process_command(char *string_command, int socket_descriptor) {
     } else if (compare(command, "pong")) {
         list_of_clients[client_id].ping_pong = 1;
     } else if (compare(command, "move_made")) {
-//        TODO Add check for wining
         int opponent_fd = list_of_clients[get_connected_opponent(client_id)].client_fd;
         int move = atoi(args);
-        if (make_move(client_id, move - 1)){
+        if (make_move(client_id, move - 1)) {
             return;
         }
-        char board[BOARD_SIZE];
-        strcpy(board, list_of_games[client_id / 2].board);
+        char board[BOARD_SIZE + 1] = {0};
+
+        copy_boards(board, list_of_games[(int) client_id / 2].board);
+
         sprintf(buf, "%s|wait_for_move|%s", SERVER_NAME, board);
+
+        printf("Buffer is: %s\nBoard is: %s\nGame is: %d\n", buf, list_of_games[(int) client_id / 2].board,
+               (int) client_id / 2);
+
         my_send(list_of_clients[client_id].client_fd, buf);
         if (list_of_clients[client_id].am_i_cross) {
             sprintf(buf, "%s|move_dot|%s", SERVER_NAME, board);
@@ -429,7 +446,7 @@ void pair_if_possible(int index) {
             sprintf(&board[i], "%d", i + 1);
         }
 
-        strcpy(list_of_games[(int) index / 2].board, board);
+        copy_boards(list_of_games[(int) index / 2].board, board);
 
         if (who_goes_first) {
             sprintf(buf, "%s|move_cross|%s", SERVER_NAME, board);
@@ -444,6 +461,21 @@ void pair_if_possible(int index) {
         }
     }
 
+}
+
+void sigint_handler() {
+    for (int i = 0; i < MAXIMUM_NUMBER_OF_CLIENTS; ++i) {
+        if (list_of_clients[i].is_client_present) {
+            sprintf(buf, "%s|exit", SERVER_NAME);
+            my_send(list_of_clients[i].client_fd, buf);
+        }
+    }
+    pthread_cancel(ping_thread);
+    shutdown(local_socket, SHUT_RDWR);
+    close(network_socket);
+    close(local_socket);
+    printf("\nClosed all sockets and exiting\n");
+    exit(0);
 }
 
 
@@ -462,23 +494,21 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
+    signal(SIGINT, sigint_handler);
+
     char *local_path = argv[1];
     char *port = argv[2];
 
-    int local_socket = initialize_local_socket(local_path);
-    int network_socket = initialize_network_socket(port);
-
+    local_socket = initialize_local_socket(local_path);
+    network_socket = initialize_network_socket(port);
 
     //    Thread to ping clients
-    pthread_t ping_thread;
-//    pthread_create(&ping_thread, NULL, (void *(*)(void *)) ping_loop, NULL);
+    pthread_create(&ping_thread, NULL, (void *(*)(void *)) ping_loop, NULL);
     srand(time(NULL));
     while (1) {
-        int new_socket_descriptor = initialize_polling_requests(local_socket, network_socket);
+        int new_socket_descriptor = initialize_polling_requests();
         my_receive(new_socket_descriptor, buf);
         process_command(buf, new_socket_descriptor);
     }
-
 }
 
-#pragma clang diagnostic pop

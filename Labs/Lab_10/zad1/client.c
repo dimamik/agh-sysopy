@@ -1,10 +1,6 @@
 #include <signal.h>
 #include "common.h"
 
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
 #define WAIT 0
 #define ACTIVE 1
 int server_socket;
@@ -16,6 +12,7 @@ pthread_mutex_t reply_mutex = PTHREAD_MUTEX_INITIALIZER;
 char board[BOARD_SIZE];
 int am_moving_cross = 1;
 int current_state = WAIT;
+char *server_name;
 
 void set_up_local_socket(char *local_socket_path) {
     server_socket = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -74,85 +71,80 @@ void register_in_server() {
     }
 }
 
-void clear_all() {
-//    TODO Send to server message that you are quitting
-    sprintf(buf, "%s|exit", nick);
-    my_send(server_socket, buf);
-}
 
-
-void print_board(char* board_from_server){
+void print_board(char *board_from_server) {
     printf("\n");
     for (int i = 0; i < 9; ++i) {
-        printf("%c|",board_from_server[i]);
-        if ((i+1)%3==0 && i!=0){
+        printf("%c|", board_from_server[i]);
+        if ((i + 1) % 3 == 0 && i != 0) {
             printf("\n");
         }
     }
 }
 
-void game_loop(void* args){
-    while (1){
-
+void game_loop(void *args) {
+    while (1) {
         pthread_mutex_lock(&reply_mutex);
-
-        while (current_state != ACTIVE){
-            pthread_cond_wait(&input_cond,&reply_mutex);
-            printf("GOT SIGNAL!\n");
+        while (current_state != ACTIVE) {
+            pthread_cond_wait(&input_cond, &reply_mutex);
         }
-
-        printf("Hello there\n");
         printf("Please, select a number 1-9 to make a move\n");
+        printf("Your figure is: %c", am_moving_cross ? 'X' : 'O');
         print_board(board);
         current_state = WAIT;
         pthread_mutex_unlock(&reply_mutex);
         int move;
-        scanf("%d",&move);
-        sprintf(buf,"%s|move_made|%d",nick,move);
-        my_send(server_socket,buf);
-
-    }
-}
-
-void parse_commands(char* string_command){
-    char *server_name = strtok(string_command, "|");
-    char *command = strtok(NULL, "|");
-    char *args = strtok(NULL, "|");
-    if (compare(command,"ping")){
-        sprintf(buf, "%s|pong",nick);
+        scanf("%d", &move);
+        sprintf(buf, "%s|move_made|%d", nick, move);
         my_send(server_socket, buf);
-    }
-    else if(compare(command,"move_cross")){
-        am_moving_cross = 1;
-        strcpy(board,args);
-        pthread_mutex_lock(&reply_mutex);
-        current_state = ACTIVE;
-        pthread_mutex_unlock(&reply_mutex);
-        pthread_cond_signal(&input_cond);
-    }else if(compare(command,"wait_for_move")){
-        print_board(args);
-        printf("I am waiting for opponents move\n");
-    }else if(compare(command,"move_dot")){
-        am_moving_cross = 0;
-        strcpy(board,args);
-        pthread_mutex_lock(&reply_mutex);
-        current_state = ACTIVE;
-        pthread_mutex_unlock(&reply_mutex);
-        pthread_cond_signal(&input_cond);
-    }else if(compare(command,"exit")){
-        exit(0);
-    }else if(compare(command,"won")){
-        printf("You won! Congratulations!\n");
-    }else if(compare(command,"loose")){
-        printf("You lost! I am sorry :(\n");
+
     }
 }
 
-void sigint_handler(){
+void sigint_handler() {
     sprintf(buf, "%s|exit", nick);
     my_send(server_socket, buf);
     exit(0);
 }
+
+void parse_commands(char *string_command) {
+   server_name = strtok(string_command, "|");
+    char *command = strtok(NULL, "|");
+    char *args = strtok(NULL, "|");
+    if (compare(command, "ping")) {
+        sprintf(buf, "%s|pong", nick);
+        my_send(server_socket, buf);
+    } else if (compare(command, "move_cross")) {
+        am_moving_cross = 1;
+        strcpy(board, args);
+        pthread_mutex_lock(&reply_mutex);
+        current_state = ACTIVE;
+        pthread_mutex_unlock(&reply_mutex);
+        pthread_cond_signal(&input_cond);
+    } else if (compare(command, "wait_for_move")) {
+        print_board(args);
+        printf("Waiting for opponents move\n");
+    } else if (compare(command, "move_dot")) {
+        am_moving_cross = 0;
+        strcpy(board, args);
+        pthread_mutex_lock(&reply_mutex);
+        current_state = ACTIVE;
+        pthread_mutex_unlock(&reply_mutex);
+        pthread_cond_signal(&input_cond);
+    } else if (compare(command, "exit")) {
+        close(server_socket);
+        exit(0);
+    } else if (compare(command, "won")) {
+        printf("You won! Congratulations!\n");
+    } else if (compare(command, "loose")) {
+        printf("You lost! I am sorry :(\n");
+        sigint_handler();
+    } else if (compare(command, "remiss")) {
+        printf("It's remiss!\n");
+        sigint_handler();
+    }
+}
+
 
 /**
  * Accepts 3 arguments:
@@ -169,7 +161,6 @@ int main(int argc, char **argv) {
         printf("Invalid number of arguments\n");
         exit(-1);
     }
-//    atexit(clear_all);
 
     signal(SIGINT, sigint_handler);
 
@@ -183,7 +174,6 @@ int main(int argc, char **argv) {
         set_up_network_socket(path_dep);
     }
 
-//    TODO Registration Process
     register_in_server();
 
     //    Thread to game loop
@@ -194,11 +184,7 @@ int main(int argc, char **argv) {
     printf("Waiting for partner\n");
 
     while (1) {
-//        TODO Game Logic from client side
         my_receive(server_socket, buf);
-
         parse_commands(buf);
     }
 }
-
-#pragma clang diagnostic pop

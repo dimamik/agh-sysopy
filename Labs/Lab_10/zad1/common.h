@@ -25,22 +25,22 @@ typedef struct {
     int am_i_cross;
 } client_t;
 
-typedef struct{
-    char board[BOARD_SIZE];
-}game_t;
+typedef struct {
+    char board[BOARD_SIZE + 1];
+} game_t;
 
 int compare(char *first, char *second) {
     return strcmp(first, second) == 0;
 }
 
 void my_send(int socket_id, char *buf) {
-    printf("\n>> Sending to %d message: %s\n", socket_id, buf);
+//    printf("\n>> Sending to %d message: %s\n", socket_id, buf);
     send(socket_id, buf, MAX_MESSAGE_LENGTH, 0);
 }
 
 void my_receive(int socket_id, char *buf) {
     recv(socket_id, buf, MAX_MESSAGE_LENGTH, 0);
-    printf("\n>> Received from %d message: %s \n", socket_id, buf);
+//    printf("\n>> Received from %d message: %s \n", socket_id, buf);
 }
 
 #endif //LAB_10_COMMON_H
