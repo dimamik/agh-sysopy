@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <zlib.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -8,11 +7,8 @@
 
 #define M_FILE FILE *
 #define M_READ fread(&ch, 1, 1, fp)
-#define M_OPEN fopen(write_path, "a+")
 #define M_OPEN_READ fopen(read_path, "r")
 #define M_CLOSE fclose
-#define M_WRITE fwrite(string, sizeof(char), strlen(string), ptr)
-#define M_STDIN stdin
 #define M_NULL NULL
 
 char *freeBuffer(char *string, size_t size)
@@ -52,6 +48,9 @@ int isStringPresentInFile(char *read_path, char *string_to_find)
         {
             if (word_len == i + 1)
             {
+                free(read_path);
+                M_CLOSE(fp);
+                free(buffer);
                 return 1;
             }
 
@@ -71,21 +70,15 @@ int isStringPresentInFile(char *read_path, char *string_to_find)
 
     M_CLOSE(fp);
     free(buffer);
+    free(read_path);
     return 0;
 }
 
-char *concatenatePaths(const char *first_main, const char *second_to_add)
+char *concatenatePaths(char *first_main, char *second_to_add)
 {
     char *pathname = calloc(strlen(first_main) + strlen(second_to_add) + 2, sizeof(char));
     sprintf(pathname, "%s/%s", first_main, second_to_add);
     return pathname;
-}
-
-FILE *openfile(const char *dirname, struct dirent *dir, const char *mode)
-{
-    FILE *fp;
-    fp = fopen(concatenatePaths(dirname, dir->d_name), mode);
-    return fp;
 }
 
 /**
@@ -93,10 +86,10 @@ FILE *openfile(const char *dirname, struct dirent *dir, const char *mode)
  */
 int checkIfFileIsTxtOrDir(char *name)
 {
-    if (name == NULL || strlen(name) < 4)
-    {
-        return -1;
-    }
+    // if (name == NULL || strlen(name) < 4)
+    // {
+    //     return -1;
+    // }
     if (name[strlen(name) - 1] == 't' && name[strlen(name) - 2] == 'x' && name[strlen(name) - 3] == 't' && name[strlen(name) - 4] == '.')
     {
         return 1;
@@ -124,16 +117,19 @@ int main(int argc, char *argv[])
         while ((dirEnt = readdir(main_directory)) != NULL)
         {
             int res = checkIfFileIsTxtOrDir(dirEnt->d_name);
-            //            printf("Name: %s, type: %d\n", dirEnt->d_name, res);
+                    //    printf("Name: %s, type: %d\n", dirEnt->d_name, res);
             if (res == 2)
             {
                 int x = fork();
                 if (x == 0 && current_depth < atoi(argv[3]))
                 {
-                    //                    printf("Curr depth = %d\n",current_depth);
-                    main_directory = opendir(concatenatePaths(full_path, dirEnt->d_name));
+                                    //    printf("Curr depth = %d\n",current_depth);
                     full_path = realloc(full_path, strlen(full_path) + 2 + strlen(dirEnt->d_name));
-                    strcpy(full_path, concatenatePaths(full_path, dirEnt->d_name));
+                    char *new_path = concatenatePaths(full_path, dirEnt->d_name);
+                    strcpy(full_path, new_path);
+                    free(new_path);
+                    closedir(main_directory);
+                    main_directory = opendir(full_path);
                     current_depth++;
                 }
             }
@@ -147,6 +143,8 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        free(full_path);
+        closedir(main_directory);
     }
     else
     {
@@ -156,5 +154,6 @@ int main(int argc, char *argv[])
     while (wait(NULL) > 0)
     {
     }
+
     return 0;
 }

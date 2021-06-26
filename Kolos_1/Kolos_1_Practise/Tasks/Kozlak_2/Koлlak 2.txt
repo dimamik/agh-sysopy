@@ -1,0 +1,152 @@
+ZADANIE 1
+
+#include <stdio.h>      
+#include <string.h>      
+#include <unistd.h>   
+#include <stdlib.h>   
+
+#include <sys/times.h>
+
+static void   display_times(clock_t, struct tms *, struct tms *);
+static void   do_cmd(char *, int instruction, int final);
+
+
+int
+main(int argc, char *argv[])
+{
+   int      i;
+
+   setbuf(stdout, NULL);
+   for (i = 1; i < argc; i++)
+      do_cmd(argv[i],i,argc-1);   
+   exit(0);
+}
+
+static void
+do_cmd(char *cmd,int instruction, int final)      /* wykonaj program, policz jego czasy, sprawdz, czy to nie jest ostatni program */
+{
+   struct tms   tmsstart, tmsend;
+   clock_t      start, end;
+   int      status;
+
+   printf("\ncommand: %s\n", cmd);
+
+   if (/*DO ZROBIENIA: zapamietaj czas w chwili aktualnej w zmiennych start i tmsstart*/) == -1)           /* zapamietaj wartosci poczatkowe pomiaru czasu*/
+      {printf("times error"); exit(-1);}
+
+   if ((status = system(cmd)) < 0)         /* wykonaj polecenie */
+      {printf("system() error");exit(-1);}
+
+   if (/*DO ZROBIENIA: zapamietaj czas w chwili aktualnej w zmiennych end i tmsend*/) == -1)      /* zapamietaj wartosci koncowe */
+      {printf("times error"); exit(-1);}
+
+   display_times(end-start, &tmsstart, &tmsend);
+
+   if(instruction==final) 
+           exit(status);
+}
+
+static void
+display_times(clock_t real, struct tms *tmsstart, struct tms *tmsend)
+{
+   static long      clktck = 0;
+
+   if (clktck == 0)   /* sprawdz, czy stan zmiennej odczytywany pierwszy raz */
+      if ((clktck = sysconf(_SC_CLK_TCK)) < 0)
+         {printf("sysconf error"); exit(-1);}
+
+   printf("  real:  %7.2f\n", real / (double) clktck);
+   printf("  user:  %7.2f\n",
+     (tmsend->tms_utime - tmsstart->tms_utime) / (double) clktck);
+   printf("  sys:   %7.2f\n",
+     (tmsend->tms_stime - tmsstart->tms_stime) / (double) clktck);
+   printf("  child user:  %7.2f\n",
+     (tmsend->tms_cutime - tmsstart->tms_cutime) / (double) clktck);
+   printf("  child sys:   %7.2f\n",
+     (tmsend->tms_cstime - tmsstart->tms_cstime) / (double) clktck);
+}
+
+
+ZADANIE 2
+
+#include <stdio.h>      
+#include <stdlib.h>      
+#include <sys/stat.h>
+
+
+int
+main(int argc, char *argv[])
+{
+   int         i;
+   struct stat   buf;
+   char      *tekst;
+
+   for (i = 1; i < argc; i++) {
+      printf("%s: ", argv[i]);
+      if (lstat(argv[i], &buf) < 0) {
+         printf("lstat error");
+         continue;
+      }
+      if ( /* TU UZUPELNIC warunek rozpoznajacy zwykly plik*/)
+         tekst = "zwykly plik";
+      else if ( /* TU UZUPELNIC warunek rozpoznajacy katalog*/)
+         tekst = "katalog";      
+      else if (/* TU UZUPELNIC warunek rozpoznajacy link symboliczny*/)
+         tekst = "link symboliczny";
+            else
+         tekst = "**** cos innego !!! ****";
+      printf("%s\n", tekst);
+   }
+   exit(0);
+}
+
+
+ZADANIE 3
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <wait.h>
+#include <string.h>
+
+
+int main(int argc, char* argv[])
+{
+
+ if(argc !=2){
+    printf("Not a suitable number of program parameters\n");
+    exit(1);
+ }
+
+ int toChildFD[2];
+ int toParentFD[2];
+
+ pipe(toChildFD);
+ pipe(toParentFD);
+
+ int val1,val2,val3 = 0;
+
+ pid_t pid;
+
+    if((pid = fork()) == 0) {
+
+    //odczytaj z potoku nienazwanego wartosc przekazana przez proces macierzysty i zapisz w zmiennej val2
+
+     val2 = val2 * val2;
+
+    //wyslij potokiem nienazwanym val2 do procesu macierzysego
+
+ } else {
+
+     val1 = atoi(argv[1]);
+     
+    //wyslij val1 potokiem nienazwanym do priocesu potomnego
+ 
+     sleep(1);
+     
+    //odczytaj z potoku nienazwanego wartosc przekazana przez proces potomny i zapisz w zmiennej val3
+    
+     printf("%d square is: %d\n",val1, val3);
+ }
+ return 0;
+}

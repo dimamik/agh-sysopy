@@ -1,0 +1,2 @@
+Dzielenie pracy pomiędzy procesami działa około 2 razy szybciej 
+niż zwykłe działanie w jednym procesie (co widać, porównując report_previous i report).

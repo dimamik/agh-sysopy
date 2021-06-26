@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
             wait(&status);
             if (x == 0)
             {
-                printf("I'm a poor child process with pid: %d, number: %d\n", getpid(), i);
+                printf("I'm a child process with pid: %d, number: %d\n", getpid(), i);
                 exit(0);
             }
         }

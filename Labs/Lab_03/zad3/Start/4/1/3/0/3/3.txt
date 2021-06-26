@@ -1,0 +1,4 @@
+
+-------------------------This is File From File Pattern 1-------------------------
+There is SEQUENCE: Hello there everybody! 
+and many many more...

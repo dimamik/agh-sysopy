@@ -1,3 +1,0 @@
-Operation: sys
-REAL: 0.030000   USER CPU: 0.000000   SYSTEM CPU: 0.030000 
-

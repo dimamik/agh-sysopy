@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     zad1_lib(argv[2][0], argv[3]);
     real_time[1] = times(tms_time[1]);
 
-    write_to_file_and_console(argv[1], "pomiar_zad_5.txt", real_time, tms_time);
+    write_to_file_and_console(argv[1], "pomiar_zad_2.txt", real_time, tms_time);
 
     for (int i = 0; i < 2; i++)
     {

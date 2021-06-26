@@ -92,33 +92,87 @@ char *addEndLineCharToString(char *s)
     return s;
 }
 
+char *freeBuffer(M_FILE ptr, char *string, size_t size)
+{
+    M_WRITE;
+    free(string);
+    string = calloc(size, sizeof(char));
+    return string;
+}
+
+char *replaceWord(M_FILE ptr, char *buffer, char *string, size_t size)
+{
+    M_WRITE;
+    //    printf("%s",string);
+    free(buffer);
+    buffer = calloc(size, sizeof(char));
+    return buffer;
+}
+
 void zad4(char *read_path, char *write_path, char *first_replace, char *second_to_replace)
 {
 
-    first_replace = addEndLineCharToString(first_replace);
-    second_to_replace = addEndLineCharToString(second_to_replace);
-
-    M_FILE dane = M_OPEN_READ;
-    if (dane == M_NULL)
+    M_FILE fp = M_OPEN_READ;
+    size_t word_len = strlen(first_replace);
+    char *buffer = calloc(strlen(first_replace) + 1, sizeof(char));
+    char ch;
+    int is_buffer_free = 1;
+    int i = -1;
+    if (fp == M_NULL)
     {
         printf("%s", "There is no file dane.txt at given path");
         exit(-1);
     }
-    char *first_buffer = inputString(dane, START_SIZE);
     M_FILE ptr = M_OPEN;
-    while (first_buffer != NULL)
+    char *string = calloc(2, sizeof(char));
+
+    while (0 != (M_READ))
     {
+        if (is_buffer_free)
+        {
+            if (ch == first_replace[0])
+            {
+                buffer[++i] = (char)ch;
+                is_buffer_free = 0;
+                continue;
+            }
+            string[0] = ch;
+            M_WRITE;
+        }
+        else
+        {
+            if (word_len == i + 1)
+            {
+                buffer = replaceWord(ptr, buffer, second_to_replace, strlen(first_replace) + 1);
+                i = -1;
+                is_buffer_free = 1;
+                string[0] = ch;
+                M_WRITE;
+                continue;
+            }
 
-        char *string = replaceStringIfNeeded(first_buffer, first_replace, second_to_replace);
-        M_WRITE;
-
-        free(first_buffer);
-        first_buffer = inputString(dane, 10);
+            if (buffer[i] != first_replace[i])
+            {
+                buffer = freeBuffer(ptr, buffer, strlen(first_replace) + 1);
+                i = -1;
+                is_buffer_free = 1;
+                string[0] = ch;
+                M_WRITE;
+                continue;
+            }
+            else
+            {
+                buffer[++i] = (char)ch;
+            }
+        }
     }
+
     M_CLOSE(ptr);
-    free(first_replace);
-    free(second_to_replace);
+    M_CLOSE(fp);
+    free(buffer);
+    free(string);
 }
+
 double subtract_time(clock_t start, clock_t end)
 {
     return (double)(end - start) / (double)sysconf(_SC_CLK_TCK);
@@ -143,6 +197,7 @@ void write_to_file_and_console(char *procedure_name, char *file_name, clock_t re
 
     fclose(ptr);
 }
+
 int main(int argc, char **argv)
 {
     if (argc < 6)

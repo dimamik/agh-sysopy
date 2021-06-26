@@ -4,6 +4,32 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/times.h>
+#include <sys/wait.h>
+
+int merge_files_command(char **argv, int i, Main_Table *mainTable)
+{
+    if (argv[i + 1] == NULL)
+    {
+        printf("INVALID ARGUMENTS");
+        return -1;
+    }
+    int x;
+    char **files_list = calloc(2, sizeof(char *));
+
+    files_list[0] = strsep(&argv[i + 1], ":");
+    files_list[1] = strsep(&argv[i + 1], ":");
+
+    x = fork();
+    if (x == 0)
+    {
+        add_new_row_to_main_table(files_list[0], files_list[1], mainTable);
+        exit(0);
+    }
+
+    free(files_list);
+    i++;
+    return i;
+}
 
 int commands_interpreter(char *argv[])
 {
@@ -107,30 +133,6 @@ void write_to_file_and_console(char *procedure_name, char *file_name, clock_t re
 
     fclose(ptr);
 }
-int merge_files_command(char **argv, int i, Main_Table *mainTable)
-{
-    if (argv[i + 1] == NULL)
-    {
-        printf("INVALID ARGUMENTS");
-        return -1;
-    }
-    int x;
-    char **files_list = calloc(2, sizeof(char *));
-
-    files_list[0] = strsep(&argv[i + 1], ":");
-    files_list[1] = strsep(&argv[i + 1], ":");
-
-    x = fork();
-    if (x == 0)
-    {
-        add_new_row_to_main_table(files_list[0], files_list[1], mainTable);
-        exit(0);
-    }
-
-    free(files_list);
-    i++;
-    return i;
-}
 
 int main(int argc, char *argv[])
 {
@@ -143,7 +145,8 @@ int main(int argc, char *argv[])
     }
     real_time[0] = times(tms_time[0]);
     commands_interpreter(argv + 1);
-    while (wait() > 0){
+    while (wait(NULL) > 0)
+    {
     }
     real_time[1] = times(tms_time[1]);
     write_to_file_and_console(argv[1], "zad2_report.txt", real_time, tms_time);
